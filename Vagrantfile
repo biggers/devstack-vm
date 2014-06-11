@@ -1,19 +1,36 @@
-# -*- mode: ruby -*-
+# -*- mode: ruby -*-  
 # vi: set ft=ruby :
 
+# after a 'vboxsf' (/Vagrant) mount failure:
+# sudo ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions
+# vagrant reload
+#
+# wget https://www.virtualbox.org/download/testcase/VBoxGuestAdditions_4.3.11-93070.iso‌
 
 Vagrant.configure("2") do |config|
 
-    config.vm.box = "saucy64"
-    config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box"
+    config.vm.box = "opscode-saucy64"
+    config.vm.hostname = "devstack"
+    config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box"
+    # config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
     # eth1, this will be the endpoint
     config.vm.network :private_network, ip: "192.168.27.100"
+    # Horizon web-UI
+    config.vm.network :forwarded_port, guest: 80, host: 18080, host_ip: "127.0.0.1"
+    # Keystone API?
+    config.vm.network :forwarded_port, guest: 5000, host: 15000, host_ip: "127.0.0.1"
+    # VNC
+    config.vm.network :forwarded_port, guest: 6080, host: 16080, host_ip: "127.0.0.1"
     # eth2, this will be the OpenStack "public" network, use DevStack default
     config.vm.network :private_network, ip: "172.24.4.225", :netmask => "255.255.255.224", :auto_config => false
+
     config.vm.provider :virtualbox do |vb|
-        vb.customize ["modifyvm", :id, "--memory", 4096]
+        vb.customize ["modifyvm", :id, "--memory", 6144]
+        vb.customize ["modifyvm", :id, "--cpus", "3"]
        	# eth2 must be in promiscuous mode for floating IPs to be accessible
        	vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+        vb.customize ["modifyvm", :id, "--uart1", "0x3F8", 4]
+        vb.gui = true
     end
     config.vm.provision :ansible do |ansible|
         ansible.host_key_checking = false
