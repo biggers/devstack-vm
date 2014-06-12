@@ -22,8 +22,7 @@ from novaclient.v1_1 import client as novaclient
 from neutronclient.v2_0 import client as neutronclient
 
 
-#auth_url = "http://192.168.27.100:35357/v2.0"
-auth_url = "http://127.0.0.1:15000/v2.0"
+auth_url = "http://192.168.27.100:5000/v2.0"
 
 username = "demo"
 password = "password"
