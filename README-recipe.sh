@@ -58,7 +58,7 @@
      #. -- Can't login to 'cirros' instance with specified login & password
 
 
-  #. ====  OpenStack services **do not restart**, upon vg halt; vg up !!
+  #. ====  OpenStack services **DO NOT restart**, upon vg halt; vg up !!
 
      #. ... Login to 'devstack'.   Run:  (and see 'Vagrantfile')
      #.
@@ -66,6 +66,15 @@
      vagrant up
 
      ssh devstack  # as user 'vagrant', see SSH config entry, below
+
+     #. Just RESTART all DevStack services
+
+     cd devstack; sudo -u vagrant env HOME=/home/vagrant ./rejoin-stack.sh
+
+     #. ==>> OR
+
+     #. RECREATE all the databases, LOSING data of all the images,
+     #  users, instances, ...
 
      cd devstack; sudo -u vagrant env HOME=/home/vagrant ./stack.sh
 

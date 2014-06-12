@@ -1,2 +1,8 @@
 .vagrant
 vagrant_ansible_inventory_default
+*~
+bin
+include
+lib
+local
+devstack
